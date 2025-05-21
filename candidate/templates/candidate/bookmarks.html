@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>My Bookmarked Jobs</h2>
+<ul>
+    {% for bookmark in bookmarks %}
+        <li>
+            <a href="{% url 'job_detail' bookmark.job.id %}">{{ bookmark.job.title }}</a>
+            <a href="{% url 'remove_bookmark' bookmark.job.id %}">Remove Bookmark</a>
+        </li>
+    {% empty %}
+        <li>No bookmarks yet.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

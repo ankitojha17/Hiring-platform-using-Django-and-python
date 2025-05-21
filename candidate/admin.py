@@ -1,6 +1,8 @@
 from django.contrib import admin
 from candidate import models
 # Register your models here.
+from .models import Bookmark
+admin.site.register(Bookmark)
 
 
 @admin.register(models.MyApplyJobList)

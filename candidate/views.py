@@ -3,6 +3,10 @@ from django.contrib.auth.decorators import login_required
 from hr.models import JobPost , CandidateApplications
 from candidate.models import MyApplyJobList
 # Create your views here.
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+from hr.models import JobPost
+from .models import Bookmark
 
 @login_required
 def candidateHome(request):
@@ -30,3 +34,19 @@ def myjoblist(request):
     joblist = MyApplyJobList.objects.filter(user=request.user)
     return render(request,'candidate/myjoblist.html',{'joblist':joblist})
 
+@login_required
+def add_bookmark(request, job_id):
+    job = get_object_or_404(JobPost, id=job_id)
+    Bookmark.objects.get_or_create(candidate=request.user, job=job)
+    return redirect('job_detail', job_id=job.id)  # Redirect to job detail page after bookmarking
+
+@login_required
+def remove_bookmark(request, job_id):
+    job = get_object_or_404(JobPost, id=job_id)
+    Bookmark.objects.filter(candidate=request.user, job=job).delete()
+    return redirect('job_detail', job_id=job.id)  # Redirect to job detail page after removing bookmark
+
+@login_required
+def view_bookmarks(request):
+    bookmarks = Bookmark.objects.filter(candidate=request.user).select_related('job')
+    return render(request, 'candidate/bookmarks.html', {'bookmarks': bookmarks})
